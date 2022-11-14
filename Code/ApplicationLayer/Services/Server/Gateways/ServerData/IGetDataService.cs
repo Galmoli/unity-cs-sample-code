@@ -4,8 +4,8 @@ using SystemUtilities;
 
 namespace ApplicationLayer.Services.Server.Gateways.ServerData
 {
-    public interface IGetDataServerService
+    public interface IGetDataService
     {
-        UniTask<Optional<DataResult>> Get(List<string> keys, string playFabId);
+        UniTask<Optional<DataResult>> Get(List<string> keys);
     }
 }
