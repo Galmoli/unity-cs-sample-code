@@ -19,7 +19,7 @@ The starting point is [UsernameInstaller.cs](https://github.com/Galmoli/unity-cs
  - **[Presenter](https://github.com/Galmoli/unity-cs-sample-code/blob/458ecfa5a65a1bcf2b4d7f789043db6e31d84384/Code/InterfaceAdapters/Lobby/Profile/Username/UsernamePresenter.cs)**: In charge of Updating the ViewModel. The Use Case will trigger the UpdateUsername function. In order to not break the main rule of the architecture, the presenter implements the Output interface, which is at the Use Case layer. 
  - **Use Cases**: [GetPlayerUsernameUseCase.cs](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/Domain/UseCases/Lobby/Profile/GetPlayerUsernameUseCase.cs) and [SetPlayerUsernameUseCase.cs](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/Domain/UseCases/Lobby/Profile/SetPlayerUsernameUseCase.cs) hold the logic that will get the data from the [UserRepository.cs](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/ApplicationLayer/DataAccess/User/UserRepository.cs)
 
-The repositories hold a local copy of the data stored in the cloud, in this case PlayFab. If the player updates their data, in this case, the username, the UserRepository is in charge of sending the new username to the cloud and updating the local copy. The UserRepository gets instantiated in another installer, that is why the UsernameInstaller gets it via the [ServiceLocator.cs](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/SystemUtilities/ServiceLocator.cs), a utility class that holds references via a dictionary. 
+The repositories hold a local copy of the data stored in the cloud, in this case, PlayFab. If the player updates their data, in this case, the username, the UserRepository is in charge of sending the new username to the cloud and updating the local copy. The UserRepository gets instantiated in another installer, that is why the UsernameInstaller gets it via the [ServiceLocator.cs](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/SystemUtilities/ServiceLocator.cs), a utility class that holds references via a dictionary. 
 
 The following diagrams shows on a higher level the classes and interfaces used in order to update the username of the player.
 
@@ -34,15 +34,15 @@ In order to limit the communication from an inner layer to an outer layer, we us
 
 The flow of control for setting a new username is pretty simple.
 
- 1. In *UsernameView*, call the Controller with the new username
- 2. In *UsernameController*, call the implementation of the *ISetPlayerUsername*
- 3. In *SetPlayerUsernameUseCase*, set the new username into the repository and the call the implementation of *IGetPlayerUsername*.
- 4. *GetPlayerUsernameUseCase* will get the newly stored username from the repository. Call the presenter via its interface, *IUsernameOutput*.
- 5. *UsernamePresenter* will update the *UsernameViewModel*.
- 6. Via an event, UniRx will update *UsernameView*.
+ 1. In *[UsernameView](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/View/Lobby/Profile/UsernameView.cs)*, call the Controller with the new username
+ 2. In *[UsernameController](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/InterfaceAdapters/Lobby/Profile/Username/UsernameController.cs)*, call the implementation of the *[ISetPlayerUsername](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/Domain/UseCases/Lobby/Profile/ISetPlayerUsername.cs)*
+ 3. In *[SetPlayerUsernameUseCase](https://github.com/Galmoli/unity-cs-sample-code/blob/aa9d052e9032649b439787fc9609e7a9ca3aecc8/Code/Domain/UseCases/Lobby/Profile/SetPlayerUsernameUseCase.cs)*, set the new username into the repository and the call the implementation of *[IGetPlayerUsername](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/Domain/UseCases/Lobby/Profile/IGetPlayerUsername.cs)*.
+ 4. *[GetPlayerUsernameUseCase](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/Domain/UseCases/Lobby/Profile/GetPlayerUsernameUseCase.cs)* will get the newly stored username from the repository. Call the presenter via its interface, *[IUsernameOutput](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/Domain/UseCases/Lobby/Profile/IUsernameOutput.cs)*.
+ 5. *[UsernamePresenter](https://github.com/Galmoli/unity-cs-sample-code/blob/aa9d052e9032649b439787fc9609e7a9ca3aecc8/Code/InterfaceAdapters/Lobby/Profile/Username/UsernamePresenter.cs)* will update the *[UsernameViewModel](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/InterfaceAdapters/Lobby/Profile/Username/UsernameViewModel.cs)*.
+ 6. Via an event, UniRx will update *[UsernameView](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/View/Lobby/Profile/UsernameView.cs)*.
 
 ## How to easily swap cloud provider
 
-On the right side of the previous diagram you can see both *PlayFabSetUserDataService* and *PlayFabGetUserDataService*. Those classes implement the *ISetDataService* and *IGetDataService*.
+On the right side of the previous diagram, you can see both *[PlayFabSetUserDataService](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/ApplicationLayer/Services/Server/PlayFab/PlayFabSetUserDataService.cs)* and *[PlayFabGetUserDataService](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/ApplicationLayer/Services/Server/PlayFab/PlayFabGetUserDataService.cs)*. Those classes implement the *[ISetDataService](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/Domain/Services/Server/ISetDataService.cs)* and *[IGetDataService](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/ApplicationLayer/Services/Server/Gateways/ServerData/IGetDataService.cs)*.
 
-The game used PlayFab as cloud provider for storing user data but we could have changed to any other provider, like Firebase, by just changing both implementations.
+The game used PlayFab as a cloud provider for storing user data, but we could have changed to any other provider, like Firebase, by just changing both implementations.
