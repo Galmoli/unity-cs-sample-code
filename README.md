@@ -2,7 +2,7 @@
 
 This repository contains some code I wrote while working on an unannounced title at Beefy.com as Junior Game Programmer.
 
-The functionality of this code is to obtain and store the player's username. We used **PlayFab** to store this data, but we could have switched to any other provider with **minimal impact on the codebase** because it followed the **Clean Architecture**. Further below, I will explain how it could be changed by just changing the specific implementation of the *getter* and the *setter*.
+The functionality of this code is to obtain and store the player's username. We used **PlayFab** to store this data, but we could have switched to any other provider with **minimal impact on the codebase** because it followed the **Clean Architecture**. Further below, I will explain how we could swap the provider by just changing the specific implementation of the *getter* and the *setter*.
 
 Note that the code in this repository won't compile out of the box because it may lack some libraries or scripts that I'm not allowed to share.
 
@@ -19,7 +19,7 @@ The starting point is [UsernameInstaller.cs](https://github.com/Galmoli/unity-cs
  - **[Presenter](https://github.com/Galmoli/unity-cs-sample-code/blob/458ecfa5a65a1bcf2b4d7f789043db6e31d84384/Code/InterfaceAdapters/Lobby/Profile/Username/UsernamePresenter.cs)**: In charge of Updating the ViewModel. The Use Case will trigger the UpdateUsername function. In order to not break the main rule of the architecture, the presenter implements the Output interface, which is at the Use Case layer. 
  - **Use Cases**: [GetPlayerUsernameUseCase.cs](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/Domain/UseCases/Lobby/Profile/GetPlayerUsernameUseCase.cs) and [SetPlayerUsernameUseCase.cs](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/Domain/UseCases/Lobby/Profile/SetPlayerUsernameUseCase.cs) hold the logic that will get the data from the [UserRepository.cs](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/ApplicationLayer/DataAccess/User/UserRepository.cs)
 
-The repositories hold a local copy of the data stored in the cloud, in this case, PlayFab. If the player updates their data, in this case, the username, the UserRepository is in charge of sending the new username to the cloud and updating the local copy. The UserRepository gets instantiated in another installer, that is why the UsernameInstaller gets it via the [ServiceLocator.cs](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/SystemUtilities/ServiceLocator.cs), a utility class that holds references via a dictionary. 
+The repositories hold a local copy of the data stored in the cloud, in this case, PlayFab. If the player updates their data, the UserRepository is in charge of sending the new username to the cloud and updating the local copy. The UserRepository gets instantiated in another installer, that is why the UsernameInstaller gets it via the [ServiceLocator.cs](https://github.com/Galmoli/unity-cs-sample-code/blob/main/Code/SystemUtilities/ServiceLocator.cs), a utility class that holds references via a dictionary. 
 
 The following diagrams shows on a higher level the classes and interfaces used in order to update the username of the player.
 
